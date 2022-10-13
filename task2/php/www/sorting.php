@@ -11,6 +11,12 @@ echo "</form>";
 if (isset($_POST['numbers'])) {
     // get the numbers from the form
     $numbers = $_POST['numbers'];
+    // check if the numbers are valid
+    if (!preg_match('/^(\d+,)*\d+$/', $numbers)) {
+        echo "<p>Invalid input</p>";
+        exit();
+    }
+
     // split the numbers by comma
     $numbers = explode(',', $numbers);
     // sort the numbers

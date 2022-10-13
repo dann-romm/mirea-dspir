@@ -3,6 +3,7 @@
 
 function printCommand($command) {
     echo "<pre>";
+    echo "Command: {$command}\n";
     echo shell_exec($command);
     echo "</pre>";
 }

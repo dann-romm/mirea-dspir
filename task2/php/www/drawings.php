@@ -27,19 +27,35 @@ function drawRhombus($width, $height, $color) {
     echo "<div style='width:0; height:0; border-left:{$width}px solid transparent; border-right:{$width}px solid transparent; border-top:{$height}px solid {$color};'></div>";
 }
 
+// print help message for 'num' parameter and exit
+function displayHelp() {
+    echo "<p>parameter 'num' is a number, where shape parameters are encoded in binary with the following mask:</p>";
+    echo "<p> 000f - shape type (0 - rectangle, 1 - circle, 2 - triangle, 3 - square, 4 - rhombus)</p>";
+    echo "<p> 00f0 - shape width (0 - 15) * 10 pixels</p>";
+    echo "<p> 0f00 - shape height (0 - 15) * 10 pixels</p>";
+    echo "<p> f000 - shape color (0 - red, 1 - green, 2 - blue, 3 - yellow, 4 - purple, 5 - orange)</p>";
+}
+
 if (isset($_GET['num'])) {
     $num = $_GET['num'];
-    // $num is a number, where shape parameters are encoded in binary with the following mask:
-    // 000f - shape type (0 - rectangle, 1 - circle, 2 - triangle, 3 - square, 4 - rhombus)
-    // 00f0 - shape width (0 - 15) * 10 pixels
-    // 0f00 - shape height (0 - 15) * 10 pixels
-    // f000 - shape color (0 - red, 1 - green, 2 - blue, 3 - yellow, 4 - purple, 5 - orange)
+    
+    // check if $num is a number
+    if (!is_numeric($num)) {
+        displayHelp();
+        exit();
+    }
 
     //draw shapes
     $type = $num & 15;
     $width = (($num >> 4) & 15) * 10;
     $height = (($num >> 8) & 15) * 10;
     $color = (($num >> 12) & 15);
+
+    if ($width == 0 || $height == 0) {
+        displayHelp();
+        exit();
+    }
+
     switch ($color) {
         case 0:
             $color = 'red';
@@ -59,6 +75,9 @@ if (isset($_GET['num'])) {
         case 5:
             $color = 'orange';
             break;
+        default:
+            displayHelp();
+            exit();
     }
     switch ($type) {
         case 0:
@@ -76,7 +95,13 @@ if (isset($_GET['num'])) {
         case 4:
             drawRhombus($width, $height, $color);
             break;
+        default:
+            displayHelp();
+            exit();
     }
+} else {
+    displayHelp();
+    exit();
 }
 
 ?>
